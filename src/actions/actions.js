@@ -1,18 +1,35 @@
 import _ from 'lodash';
 import jsonplaceholder from '../apis/jsonplaceholder';
 
-const grab_posts = ()=>{
+export const grab_both = ()=> {
     return async (dispatch, getState)=>{
-        const response = await jsonplaceholder.get('/posts');
-        dispatch({type:'Trump', payload: response.data})
+        await dispatch(grab_posts())
+
+        const userIds = _.uniq(_.map(getState().posts, 'userId'))
+        userIds.forEach(a=> dispatch(grab_users(a)));
     }
 }
 
-const grab_users = ()=>{
-    return async (dispatch, getState)=>{
-        const response = await jsonplaceholder.get('/users');
+export const grab_posts = ()=> async dispatch=>{
+    const response = await jsonplaceholder.get('/posts');
+    
+    dispatch({type:'Trump', payload: response.data})
+}
+
+export const grab_users = (id)=>{
+    return async (dispatch)=>{
+        const response = await jsonplaceholder.get(`/users/${id}`);
+    
         dispatch({type:'GRAB_USERS', payload: response.data})
     }
 }
 
-export {grab_posts, grab_users}
+// export const grab_users = id=> async dispatch=>{
+//     x(id, dispatch)
+// }
+
+// const x = _.memoize(async (id, dispatch)=>{
+//     const response = await jsonplaceholder.get(`/users/${id}`);
+    
+//     dispatch({type:'GRAB_USERS', payload: response.data})
+// })

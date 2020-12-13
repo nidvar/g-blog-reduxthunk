@@ -1,4 +1,3 @@
-
 import PostList from './components/PostList'
 
 function App() {
